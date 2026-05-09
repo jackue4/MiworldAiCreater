@@ -87,6 +87,17 @@ textarea {
   mix-blend-mode: screen;
 }
 
+.game-ui-overlay {
+  position: absolute;
+  top: max(12px, var(--safe-top));
+  left: 14px;
+  z-index: 5;
+  width: clamp(120px, 18vw, 210px);
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.36));
+}
+
 .top-hud {
   position: absolute;
   top: max(10px, var(--safe-top));
@@ -95,22 +106,9 @@ textarea {
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   padding: 0 22px;
-}
-
-.status-pill {
-  flex: 0 0 auto;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(8, 12, 24, 0.42);
-  backdrop-filter: blur(18px);
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .log-button,
@@ -392,6 +390,11 @@ textarea {
 }
 
 @media (max-width: 720px) {
+  .game-ui-overlay {
+    width: clamp(96px, 22vw, 140px);
+    left: 10px;
+  }
+
   .top-hud {
     padding: 0 14px;
   }

@@ -18,6 +18,7 @@ const aiGenerationSteps = [
 
 let replyTimers = [];
 let hasStartedVideo = false;
+let isGenerating = false;
 const conversation = [{ text: introMessage, type: "ai" }];
 
 function autosizeInput() {
@@ -60,9 +61,10 @@ function renderConversation() {
   promptLog.replaceChildren();
   fullLog.replaceChildren();
 
-  const visibleMessages = conversation.slice(-3);
+  const visibleMessages = isGenerating ? conversation.slice(-1) : conversation.slice(-3);
   visibleMessages.forEach(({ text, type }, index) => {
-    const isFinalAi = type === "ai" && index === visibleMessages.length - 1 && conversation.length > 1;
+    const isLatestMessage = index === visibleMessages.length - 1;
+    const isFinalAi = type === "ai" && isLatestMessage && conversation.length > 1;
     promptLog.append(createMessage(text, type, isFinalAi ? "ai-message--final" : ""));
   });
 
@@ -111,6 +113,7 @@ function pushAiGenerationFlow() {
 }
 
 function pushPrompt(text) {
+  isGenerating = true;
   addConversationMessage(text, "user");
   playVideoFromPrompt();
   pushAiGenerationFlow();

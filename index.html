@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>AI 游戏交互 Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="demo-stage" aria-label="横屏游戏交互 Demo">
+      <section class="game-screen">
+        <video class="game-video" src="assets/game-video.mp4" preload="auto" muted loop playsinline></video>
+
+        <div class="top-hud" aria-hidden="true">
+          <div class="status-pill">AI Companion</div>
+        </div>
+
+        <section class="ai-panel" aria-live="polite">
+          <div class="ai-message ai-message--assistant">
+            <span class="avatar">AI</span>
+            <p>输入你的世界生成需求并发送，我会理解关键词、规划地形与建筑，然后立即开始播放生成过程。</p>
+          </div>
+          <div class="prompt-log" id="promptLog"></div>
+        </section>
+
+        <form class="prompt-bar" id="promptForm">
+          <label class="sr-only" for="promptInput">输入 AI 提示词</label>
+          <textarea
+            id="promptInput"
+            class="prompt-input"
+            name="prompt"
+            rows="1"
+            maxlength="120"
+            placeholder="帮我在我的附近生成宏伟的中世界建筑城堡，需要有山脉，岩浆，地形要大，帅气"
+            autocomplete="off"
+          ></textarea>
+          <button class="send-button" type="submit" aria-label="发送提示词">发送</button>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

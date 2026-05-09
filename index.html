@@ -13,8 +13,9 @@
       <section class="game-screen">
         <video class="game-video" src="assets/game-video.mp4" preload="auto" muted loop playsinline></video>
 
-        <div class="top-hud" aria-hidden="true">
-          <div class="status-pill">AI Companion</div>
+        <div class="top-hud">
+          <div class="status-pill" aria-hidden="true">AI Companion</div>
+          <button class="log-button" id="logButton" type="button" aria-expanded="false" aria-controls="logDrawer">Log</button>
         </div>
 
         <section class="ai-panel" aria-live="polite">
@@ -25,6 +26,17 @@
           <div class="prompt-log" id="promptLog"></div>
         </section>
 
+        <aside class="log-drawer" id="logDrawer" aria-hidden="true">
+          <div class="log-drawer__header">
+            <div>
+              <span class="log-eyebrow">Conversation Log</span>
+              <h2>完整对话</h2>
+            </div>
+            <button class="log-close" id="logClose" type="button" aria-label="关闭完整对话">×</button>
+          </div>
+          <div class="full-log" id="fullLog"></div>
+        </aside>
+
         <form class="prompt-bar" id="promptForm">
           <label class="sr-only" for="promptInput">输入 AI 提示词</label>
           <textarea
@@ -33,7 +45,7 @@
             name="prompt"
             rows="1"
             maxlength="120"
-            placeholder="帮我在我的附近生成宏伟的中世界建筑城堡，需要有山脉，岩浆，地形要大，帅气"
+            placeholder="输入你的世界生成需求，例如：生成一座岩浆城堡"
             autocomplete="off"
           ></textarea>
           <button class="send-button" type="submit" aria-label="发送提示词">发送</button>

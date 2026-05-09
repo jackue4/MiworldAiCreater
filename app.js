@@ -1,20 +1,24 @@
 const form = document.querySelector("#promptForm");
 const input = document.querySelector("#promptInput");
 const promptLog = document.querySelector("#promptLog");
+const fullLog = document.querySelector("#fullLog");
+const logButton = document.querySelector("#logButton");
+const logDrawer = document.querySelector("#logDrawer");
+const logClose = document.querySelector("#logClose");
 const sendButton = form.querySelector(".send-button");
 const gameVideo = document.querySelector(".game-video");
 
-const defaultPrompt = "帮我在我的附近生成宏伟的中世界建筑城堡，需要有山脉，岩浆，地形要大，帅气";
+const introMessage = "输入你的世界生成需求并发送，我会理解关键词、规划地形与建筑，然后立即开始播放生成过程。";
 
 const aiGenerationSteps = [
-  "收到。我正在拆解你的需求：中世纪城堡、超大地形、山脉轮廓、岩浆地貌，以及更有压迫感的史诗级视觉中心。",
-  "我会把城堡放在你附近的高地核心区，周围生成连绵山脉和断崖，让主体建筑显得更宏伟。",
-  "岩浆会从山体裂隙和城堡外环沟壑中流出，形成天然护城河，同时强化危险、帅气、末日幻想的氛围。",
-  "生成方案已确认：巨型中世纪主堡、尖塔群、山脉屏障、岩浆峡谷、大尺度地形起伏。现在开始在游戏世界中执行。"
+  "收到。我正在拆解你的需求：建筑风格、地形规模、附近生成范围、核心视觉元素和危险氛围。",
+  "我会先规划主体结构，再补充山体、道路、岩浆流向和地形高低差，让生成结果更像一个完整场景。",
+  "方案已确认。现在开始执行生成，并把重点放在宏伟感、空间层次和玩家第一眼看到的冲击力。"
 ];
 
 let replyTimers = [];
 let hasStartedVideo = false;
+const conversation = [{ text: introMessage, type: "ai" }];
 
 function autosizeInput() {
   input.style.height = "auto";
@@ -37,15 +41,46 @@ function createMessage(text, type, modifier = "") {
   return message;
 }
 
+function createLogMessage(text, type) {
+  const item = document.createElement("article");
+  item.className = `log-entry log-entry--${type}`;
+
+  const speaker = document.createElement("span");
+  speaker.className = "log-entry__speaker";
+  speaker.textContent = type === "user" ? "你" : "AI";
+
+  const content = document.createElement("p");
+  content.textContent = text;
+
+  item.append(speaker, content);
+  return item;
+}
+
+function renderConversation() {
+  promptLog.replaceChildren();
+  fullLog.replaceChildren();
+
+  const visibleMessages = conversation.slice(-3);
+  visibleMessages.forEach(({ text, type }, index) => {
+    const isFinalAi = type === "ai" && index === visibleMessages.length - 1 && conversation.length > 1;
+    promptLog.append(createMessage(text, type, isFinalAi ? "ai-message--final" : ""));
+  });
+
+  conversation.forEach(({ text, type }) => {
+    fullLog.append(createLogMessage(text, type));
+  });
+
+  fullLog.scrollTop = fullLog.scrollHeight;
+}
+
+function addConversationMessage(text, type) {
+  conversation.push({ text, type });
+  renderConversation();
+}
+
 function clearPendingReplies() {
   replyTimers.forEach((timer) => window.clearTimeout(timer));
   replyTimers = [];
-}
-
-function trimPromptLog() {
-  while (promptLog.children.length > 6) {
-    promptLog.firstElementChild.remove();
-  }
 }
 
 function playVideoFromPrompt() {
@@ -68,8 +103,7 @@ function pushAiGenerationFlow() {
 
   aiGenerationSteps.forEach((reply, index) => {
     const timer = window.setTimeout(() => {
-      promptLog.append(createMessage(reply, "ai", index === aiGenerationSteps.length - 1 ? "ai-message--final" : ""));
-      trimPromptLog();
+      addConversationMessage(reply, "ai");
     }, 360 + index * 1250);
 
     replyTimers.push(timer);
@@ -77,10 +111,15 @@ function pushAiGenerationFlow() {
 }
 
 function pushPrompt(text) {
-  promptLog.append(createMessage(text, "user"));
-  trimPromptLog();
+  addConversationMessage(text, "user");
   playVideoFromPrompt();
   pushAiGenerationFlow();
+}
+
+function setLogOpen(isOpen) {
+  logDrawer.classList.toggle("is-open", isOpen);
+  logDrawer.setAttribute("aria-hidden", String(!isOpen));
+  logButton.setAttribute("aria-expanded", String(isOpen));
 }
 
 input.addEventListener("input", autosizeInput);
@@ -103,5 +142,19 @@ form.addEventListener("submit", (event) => {
   autosizeInput();
 });
 
-input.value = defaultPrompt;
+logButton.addEventListener("click", () => {
+  setLogOpen(!logDrawer.classList.contains("is-open"));
+});
+
+logClose.addEventListener("click", () => {
+  setLogOpen(false);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setLogOpen(false);
+  }
+});
+
+renderConversation();
 autosizeInput();

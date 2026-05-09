@@ -43,7 +43,6 @@ return Script`;
 
 let replyTimers = [];
 let typewriterTimer = null;
-let hasStartedVideo = false;
 let isGenerating = false;
 const conversation = [{ text: introMessage, type: "ai", kind: "message" }];
 
@@ -140,11 +139,8 @@ function playVideoFromPrompt() {
   if (!gameVideo) return;
 
   gameVideo.controls = false;
-
-  if (!hasStartedVideo) {
-    gameVideo.currentTime = 0;
-    hasStartedVideo = true;
-  }
+  gameVideo.pause();
+  gameVideo.currentTime = 0;
 
   gameVideo.play().catch(() => {
     gameVideo.controls = true;
@@ -226,6 +222,10 @@ form.addEventListener("submit", (event) => {
   pushPrompt(text);
   input.value = "";
   autosizeInput();
+});
+
+gameVideo.addEventListener("ended", () => {
+  gameVideo.pause();
 });
 
 logButton.addEventListener("click", () => {

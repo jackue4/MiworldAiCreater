@@ -8,13 +8,13 @@ const logClose = document.querySelector("#logClose");
 const sendButton = form.querySelector(".send-button");
 const gameVideo = document.querySelector(".game-video");
 
-const introMessage = "输入你的世界生成需求并发送，我会理解关键词、规划地形与建筑，然后立即开始播放生成过程。";
+const introMessage = "Enter your world-generation request and send it. I will understand the key ideas, plan the terrain and architecture, then start the generation preview.";
 
 const aiGenerationSteps = [
-  "收到。我正在拆解你的需求：建筑风格、地形规模、附近生成范围、核心视觉元素和危险氛围。",
-  "我会先规划主体结构，再补充山体、道路、岩浆流向和地形高低差，让生成结果更像一个完整场景。",
-  "我正在同步生成脚本逻辑，把你的自然语言需求转换成可执行的 UGC 组件代码。",
-  "方案已确认。现在开始执行生成，并把重点放在宏伟感、空间层次和玩家第一眼看到的冲击力。"
+  "Request received. I am breaking it down into architectural style, terrain scale, nearby placement range, key visual anchors, and environmental atmosphere.",
+  "I will plan the main structure first, then add mountains, paths, lava flow direction, and elevation changes so the result feels like a complete scene.",
+  "I am now generating the script logic, converting your natural-language request into executable UGC component code.",
+  "Generation plan confirmed. I am executing it now, focusing on grandeur, spatial depth, and the strongest first-look impact for the player."
 ];
 
 const generatedLuaCode = `-- 官方定义的函数，不能修改变动
@@ -59,7 +59,7 @@ function createMessage(text, type, modifier = "") {
 
   const avatar = document.createElement("span");
   avatar.className = "avatar";
-  avatar.textContent = type === "user" ? "你" : "AI";
+  avatar.textContent = type === "user" ? "You" : "AI";
 
   const content = document.createElement("p");
   content.textContent = text;
@@ -74,7 +74,7 @@ function createLogMessage(entry) {
 
   const speaker = document.createElement("span");
   speaker.className = "log-entry__speaker";
-  speaker.textContent = entry.kind === "code" ? "AI 生成脚本" : entry.type === "user" ? "你" : "AI";
+  speaker.textContent = entry.kind === "code" ? "AI Generated Script" : entry.type === "user" ? "You" : "AI";
 
   if (entry.kind === "code") {
     const codeShell = document.createElement("div");

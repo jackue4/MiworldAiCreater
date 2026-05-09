@@ -20,10 +20,6 @@
         </div>
 
         <section class="ai-panel" aria-live="polite">
-          <div class="ai-message ai-message--assistant">
-            <span class="avatar">AI</span>
-            <p>输入你的世界生成需求并发送，我会理解关键词、规划地形与建筑，然后立即开始播放生成过程。</p>
-          </div>
           <div class="prompt-log" id="promptLog"></div>
         </section>
 
@@ -31,25 +27,25 @@
           <div class="log-drawer__header">
             <div>
               <span class="log-eyebrow">Conversation Log</span>
-              <h2>完整对话</h2>
+              <h2>Full Conversation</h2>
             </div>
-            <button class="log-close" id="logClose" type="button" aria-label="关闭完整对话">×</button>
+            <button class="log-close" id="logClose" type="button" aria-label="Close full conversation">×</button>
           </div>
           <div class="full-log" id="fullLog"></div>
         </aside>
 
         <form class="prompt-bar" id="promptForm">
-          <label class="sr-only" for="promptInput">输入 AI 提示词</label>
+          <label class="sr-only" for="promptInput">Enter AI prompt</label>
           <textarea
             id="promptInput"
             class="prompt-input"
             name="prompt"
             rows="1"
             maxlength="120"
-            placeholder="输入你的世界生成需求，例如：生成一座岩浆城堡"
+            placeholder="Enter your world request, e.g. generate a lava castle"
             autocomplete="off"
           ></textarea>
-          <button class="send-button" type="submit" aria-label="发送提示词">发送</button>
+          <button class="send-button" type="submit" aria-label="Send prompt">Send</button>
         </form>
       </section>
     </main>

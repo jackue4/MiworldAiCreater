@@ -7,14 +7,40 @@ const logDrawer = document.querySelector("#logDrawer");
 const logClose = document.querySelector("#logClose");
 const sendButton = form.querySelector(".send-button");
 const gameVideo = document.querySelector(".game-video");
+const generationStatus = document.querySelector("#generationStatus");
+const generationProgress = document.querySelector("#generationProgress");
+const conversationScroll = document.querySelector("#conversationScroll");
+const modeButtons = document.querySelectorAll(".mode-button");
+const modeStatus = document.querySelector("#modeStatus");
 
-const introMessage = "Enter your world-generation request and send it. I will understand the key ideas, plan the terrain and architecture, then start the generation preview.";
+const introMessage = "Enter your world-generation request and send it. I will plan the task, drive the live preview, and show what the Agent is doing in real time.";
+
+const modeLabels = {
+  code: "Code Mode",
+  scene: "Scene Creation",
+  ui: "UI Editing",
+  model: "Model Generation"
+};
+
+const modeIntro = {
+  code: "Code Mode activated. I will focus on scripts, APIs, events, and executable logic.",
+  scene: "Scene Creation mode activated. I will focus on terrain, props, lighting, and spatial composition.",
+  ui: "UI Editing mode activated. I will focus on panels, controls, interaction states, and screen layout.",
+  model: "Model Generation mode activated. I will focus on assets, object style, scale, and generation passes."
+};
 
 const aiGenerationSteps = [
-  "Request received. I am breaking it down into architectural style, terrain scale, nearby placement range, key visual anchors, and environmental atmosphere.",
-  "I will plan the main structure first, then add mountains, paths, lava flow direction, and elevation changes so the result feels like a complete scene.",
+  "Request received. I am breaking it down into style, terrain scale, interaction requirements, and preview actions.",
+  "I am updating the live viewport so you can preview what the Agent is creating on the left side.",
   "I am now generating the script logic, converting your natural-language request into executable UGC component code.",
-  "Generation plan confirmed. I am executing it now, focusing on grandeur, spatial depth, and the strongest first-look impact for the player."
+  "Generation plan confirmed. I am executing it now and keeping the latest status visible while the full process is saved in Log."
+];
+
+const statusSteps = [
+  { text: "Analyzing prompt", progress: "18%" },
+  { text: "Planning scene structure", progress: "42%" },
+  { text: "Generating logic and assets", progress: "68%" },
+  { text: "Preview ready", progress: "100%" }
 ];
 
 const generatedLuaCode = `-- 官方定义的函数，不能修改变动
@@ -48,7 +74,7 @@ const conversation = [{ text: introMessage, type: "ai", kind: "message" }];
 
 function autosizeInput() {
   input.style.height = "auto";
-  input.style.height = `${Math.min(input.scrollHeight, 92)}px`;
+  input.style.height = `${Math.min(input.scrollHeight, 86)}px`;
   sendButton.disabled = input.value.trim().length === 0;
 }
 
@@ -106,7 +132,10 @@ function renderConversation() {
   promptLog.replaceChildren();
   fullLog.replaceChildren();
 
-  const visibleMessages = isGenerating ? conversation.filter((entry) => entry.kind !== "code").slice(-1) : conversation.filter((entry) => entry.kind !== "code").slice(-3);
+  const visibleMessages = isGenerating
+    ? conversation.filter((entry) => entry.kind !== "code").slice(-2)
+    : conversation.filter((entry) => entry.kind !== "code").slice(-3);
+
   visibleMessages.forEach(({ text, type }, index) => {
     const isLatestMessage = index === visibleMessages.length - 1;
     const isFinalAi = type === "ai" && isLatestMessage && conversation.length > 1;
@@ -118,6 +147,7 @@ function renderConversation() {
   });
 
   fullLog.scrollTop = fullLog.scrollHeight;
+  conversationScroll.scrollTop = conversationScroll.scrollHeight;
 }
 
 function addConversationMessage(text, type, kind = "message") {
@@ -133,6 +163,12 @@ function clearPendingReplies() {
     window.clearInterval(typewriterTimer);
     typewriterTimer = null;
   }
+}
+
+function updatePreviewStatus(stepIndex) {
+  const step = statusSteps[Math.min(stepIndex, statusSteps.length - 1)];
+  generationStatus.textContent = step.text;
+  generationProgress.style.width = step.progress;
 }
 
 function playVideoFromPrompt() {
@@ -174,9 +210,11 @@ function startCodeTypewriter() {
 
 function pushAiGenerationFlow() {
   clearPendingReplies();
+  updatePreviewStatus(0);
 
   aiGenerationSteps.forEach((reply, index) => {
     const timer = window.setTimeout(() => {
+      updatePreviewStatus(index);
       addConversationMessage(reply, "ai");
     }, 360 + index * 1250);
 
@@ -184,6 +222,7 @@ function pushAiGenerationFlow() {
   });
 
   const codeTimer = window.setTimeout(() => {
+    updatePreviewStatus(statusSteps.length - 1);
     startCodeTypewriter();
     setLogOpen(true);
   }, 360 + aiGenerationSteps.length * 1250);
@@ -202,6 +241,15 @@ function setLogOpen(isOpen) {
   logDrawer.classList.toggle("is-open", isOpen);
   logDrawer.setAttribute("aria-hidden", String(!isOpen));
   logButton.setAttribute("aria-expanded", String(isOpen));
+}
+
+function setMode(mode) {
+  modeButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.mode === mode);
+  });
+
+  modeStatus.textContent = modeLabels[mode];
+  addConversationMessage(modeIntro[mode], "ai");
 }
 
 input.addEventListener("input", autosizeInput);
@@ -226,6 +274,13 @@ form.addEventListener("submit", (event) => {
 
 gameVideo.addEventListener("ended", () => {
   gameVideo.pause();
+  generationStatus.textContent = "Preview paused. Send another prompt to replay.";
+});
+
+modeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    setMode(button.dataset.mode);
+  });
 });
 
 logButton.addEventListener("click", () => {
@@ -244,3 +299,4 @@ document.addEventListener("keydown", (event) => {
 
 renderConversation();
 autosizeInput();
+updatePreviewStatus(0);

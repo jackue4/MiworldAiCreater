@@ -5,23 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>AI 游戏交互 Demo</title>
+    <title>AI Creator Workspace</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="demo-stage" aria-label="横屏游戏交互 Demo">
-      <section class="game-screen">
-        <video class="game-video" src="assets/game-video.mp4" preload="auto" muted playsinline></video>
-
-        <img class="game-ui-overlay" src="Ui/Frame 742227.png" alt="游戏界面状态栏" />
-
-        <div class="top-hud">
-          <button class="log-button" id="logButton" type="button" aria-expanded="false" aria-controls="logDrawer">Log</button>
+    <main class="creator-shell" aria-label="AI Creator Workspace">
+      <section class="preview-pane" aria-label="AI live preview viewport">
+        <div class="preview-topbar">
+          <button class="icon-button" type="button" aria-label="Back">←</button>
+          <button class="icon-button" type="button" aria-label="Settings">⚙</button>
+          <div class="edit-status"><span></span> Editing: Adventure Scene</div>
+          <button class="icon-button" type="button" aria-label="Fullscreen">⛶</button>
         </div>
 
-        <section class="ai-panel" aria-live="polite">
+        <div class="viewport-card">
+          <video class="game-video" src="assets/game-video.mp4" preload="auto" muted playsinline></video>
+          <img class="game-ui-overlay" src="Ui/Frame 742227.png" alt="Game UI status bar" />
+
+          <div class="mobile-controls" aria-hidden="true">
+            <span>✋</span>
+            <span>✦</span>
+            <span>↻</span>
+          </div>
+
+          <div class="generation-card" aria-live="polite">
+            <div class="generation-card__title">AI is building...</div>
+            <div class="generation-card__desc" id="generationStatus">Waiting for your prompt</div>
+            <div class="progress-track"><span id="generationProgress"></span></div>
+          </div>
+        </div>
+
+        <div class="playback-bar" aria-label="Preview playback controls">
+          <button type="button">⏮</button>
+          <button type="button">◀</button>
+          <button class="play-button" type="button" aria-label="Play preview">▶</button>
+          <button type="button">▶</button>
+          <button type="button">⏭</button>
+        </div>
+
+        <div class="thumbnail-strip" aria-label="Preview camera presets">
+          <button class="thumb is-active" type="button"><span></span><strong>Main View</strong></button>
+          <button class="thumb" type="button"><span></span><strong>Player View</strong></button>
+          <button class="thumb" type="button"><span></span><strong>Bird View</strong></button>
+          <button class="thumb" type="button"><span></span><strong>Render</strong></button>
+          <button class="thumb thumb--add" type="button">＋</button>
+        </div>
+      </section>
+
+      <section class="agent-pane" aria-label="Agent conversation workspace">
+        <header class="agent-header">
+          <div>
+            <p>AI Assistant</p>
+            <h1>Creation Agent</h1>
+          </div>
+          <button class="thinking-pill" type="button"><span></span><strong id="modeStatus">Scene Creation</strong>⌄</button>
+        </header>
+
+        <div class="conversation-scroll" id="conversationScroll">
           <div class="prompt-log" id="promptLog"></div>
-        </section>
+          <section class="task-panel" aria-label="Current operations">
+            <h2>Executing Operations</h2>
+            <div class="task-list" id="taskList">
+              <div class="task-row is-done"><span></span><p>Generate terrain base</p><strong>Done</strong></div>
+              <div class="task-row is-done"><span></span><p>Create object groups</p><strong>Done</strong></div>
+              <div class="task-row is-active"><span></span><p>Build interaction logic</p><strong>Running</strong></div>
+              <div class="task-row"><span></span><p>Apply model pass</p><strong>Waiting</strong></div>
+            </div>
+          </section>
+        </div>
 
         <aside class="log-drawer" id="logDrawer" aria-hidden="true">
           <div class="log-drawer__header">
@@ -35,19 +86,35 @@
         </aside>
 
         <form class="prompt-bar" id="promptForm">
+          <button class="log-button" id="logButton" type="button" aria-expanded="false" aria-controls="logDrawer">Log</button>
           <label class="sr-only" for="promptInput">Enter AI prompt</label>
           <textarea
             id="promptInput"
             class="prompt-input"
             name="prompt"
             rows="1"
-            maxlength="120"
-            placeholder="Enter your world request, e.g. generate a lava castle"
+            maxlength="160"
+            placeholder="Describe what you want to create..."
             autocomplete="off"
           ></textarea>
-          <button class="send-button" type="submit" aria-label="Send prompt">Send</button>
+          <button class="send-button" type="submit" aria-label="Send prompt">➤</button>
         </form>
+
+        <nav class="mobile-agent-tabs" aria-label="Agent sections">
+          <button class="is-active" type="button">Chat</button>
+          <button type="button">Assets</button>
+          <button type="button">History</button>
+          <button type="button">Settings</button>
+        </nav>
       </section>
+
+      <aside class="mode-rail" aria-label="Work mode switcher">
+        <h2>Work Mode</h2>
+        <button class="mode-button" type="button" data-mode="code"><span>⌘</span><strong>Code Mode</strong></button>
+        <button class="mode-button is-active" type="button" data-mode="scene"><span>⬡</span><strong>Scene Creation</strong></button>
+        <button class="mode-button" type="button" data-mode="ui"><span>▣</span><strong>UI Editing</strong></button>
+        <button class="mode-button" type="button" data-mode="model"><span>◈</span><strong>Model Generation</strong></button>
+      </aside>
     </main>
 
     <script type="module" src="app.js"></script>

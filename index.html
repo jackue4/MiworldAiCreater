@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mini World AI Agent Demo</title>
+    <script type="module" crossorigin src="/MiworldAiCreater/assets/index-BggnzLOx.js"></script>
+    <link rel="stylesheet" crossorigin href="/MiworldAiCreater/assets/index-C64hnHkQ.css">
+  </head>
+  <body>
+    <main class="demo-page" aria-label="Mini World AI Agent Demo">
+      <section class="demo-frame" id="demoFrame" aria-label="基于视频尺寸的 AI Demo 画布">
+        <section class="video-surface" aria-label="游戏视频画面">
+          <video
+            id="gameVideo"
+            class="game-video"
+            src="/MiworldAiCreater/assets/Ai-C-f38y7y.mp4"
+            preload="metadata"
+            playsinline
+            muted
+          ></video>
+          <button class="video-play-button" id="videoPlayButton" type="button" aria-label="播放视频预览">
+            <span>▶</span>
+          </button>
+          <div class="video-meta" id="videoMeta">Loading video size...</div>
+        </section>
+
+        <aside class="agent-sidebar" aria-label="Agent 对话侧边栏">
+          <header class="agent-header">
+            <div class="agent-brand">
+              <span class="agent-logo">✦</span>
+              <div>
+                <h1>AI Agent</h1>
+                <p>Game creation assistant</p>
+              </div>
+            </div>
+            <div class="agent-actions">
+              <span class="beta-badge">BETA</span>
+              <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="收起 Agent 侧边栏" aria-expanded="true">›</button>
+            </div>
+          </header>
+
+          <div class="agent-status">
+            <span></span>
+            <strong>Ready</strong>
+            <p>基于当前游戏画面进行自然语言修改</p>
+          </div>
+
+          <div class="chat-list" id="chatList" aria-live="polite">
+            <article class="chat-message chat-message--agent">
+              <p>我是迷你世界的 AI 助手，有什么可以帮助你的吗？</p>
+              <time>Agent · just now</time>
+            </article>
+          </div>
+
+          <div class="quick-prompts" aria-label="快捷指令">
+            <button type="button" data-prompt="帮我解释这个切换模式流程，并生成简化交互方案">解释流程</button>
+            <button type="button" data-prompt="把当前操作简化成适合新手的一步式 AI 指令">一键简化</button>
+            <button type="button" data-prompt="生成右侧 Agent 面板的演示话术">演示话术</button>
+          </div>
+
+          <form class="agent-input" id="agentForm">
+            <input class="sr-only" id="imageInput" type="file" accept="image/*" />
+            <label class="image-upload-button" for="imageInput" aria-label="选择图片发送给 Agent">＋</label>
+            <label class="sr-only" for="agentInput">输入给 Agent 的需求</label>
+            <div class="agent-compose">
+              <div class="selected-image" id="selectedImage" hidden>
+                <img id="selectedImagePreview" alt="已选择的图片预览" />
+                <button id="removeImageButton" type="button" aria-label="移除已选择图片">×</button>
+              </div>
+              <textarea id="agentInput" rows="1" maxlength="220" placeholder="Ask Agent to change the game..."></textarea>
+            </div>
+            <button id="sendButton" type="submit" aria-label="发送给 Agent">➤</button>
+          </form>
+        </aside>
+      </section>
+    </main>
+
+  </body>
+</html>

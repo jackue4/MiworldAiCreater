@@ -37,7 +37,7 @@ const aiGenerationSteps = [
 ];
 
 const statusSteps = [
-  { text: "Analyzing prompt", progress: "18%" },
+  { text: "Waiting for your prompt", progress: "0%" },
   { text: "Planning scene structure", progress: "42%" },
   { text: "Generating logic and assets", progress: "68%" },
   { text: "Preview ready", progress: "100%" }
@@ -171,6 +171,24 @@ function updatePreviewStatus(stepIndex) {
   generationProgress.style.width = step.progress;
 }
 
+function showFirstVideoFrame() {
+  if (!gameVideo) return;
+
+  gameVideo.controls = false;
+  gameVideo.pause();
+
+  const seekToStart = () => {
+    gameVideo.currentTime = 0;
+  };
+
+  if (gameVideo.readyState >= 1) {
+    seekToStart();
+    return;
+  }
+
+  gameVideo.addEventListener("loadedmetadata", seekToStart, { once: true });
+}
+
 function playVideoFromPrompt() {
   if (!gameVideo) return;
 
@@ -179,7 +197,7 @@ function playVideoFromPrompt() {
   gameVideo.currentTime = 0;
 
   gameVideo.play().catch(() => {
-    gameVideo.controls = true;
+    generationStatus.textContent = "Tap the preview once to allow playback, then send your prompt again.";
   });
 }
 
@@ -210,11 +228,12 @@ function startCodeTypewriter() {
 
 function pushAiGenerationFlow() {
   clearPendingReplies();
-  updatePreviewStatus(0);
+  generationStatus.textContent = "Analyzing prompt";
+  generationProgress.style.width = "18%";
 
   aiGenerationSteps.forEach((reply, index) => {
     const timer = window.setTimeout(() => {
-      updatePreviewStatus(index);
+      updatePreviewStatus(index + 1);
       addConversationMessage(reply, "ai");
     }, 360 + index * 1250);
 
@@ -277,6 +296,8 @@ gameVideo.addEventListener("ended", () => {
   generationStatus.textContent = "Preview paused. Send another prompt to replay.";
 });
 
+gameVideo.addEventListener("loadeddata", showFirstVideoFrame, { once: true });
+
 modeButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setMode(button.dataset.mode);
@@ -300,3 +321,4 @@ document.addEventListener("keydown", (event) => {
 renderConversation();
 autosizeInput();
 updatePreviewStatus(0);
+showFirstVideoFrame();

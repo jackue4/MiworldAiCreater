@@ -65,7 +65,7 @@ button {
 .preview-pane {
   position: relative;
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
+  grid-template-rows: 1fr auto;
   gap: 12px;
   overflow: hidden;
   border-radius: 28px;
@@ -90,7 +90,6 @@ button {
 .log-button,
 .log-close,
 .mode-button,
-.playback-bar button,
 .thumb {
   border: 1px solid var(--line);
   background: rgba(11, 15, 27, 0.68);
@@ -103,7 +102,6 @@ button {
 .thinking-pill,
 .log-button,
 .log-close,
-.playback-bar button,
 .thumb,
 .mode-button {
   pointer-events: auto;
@@ -248,34 +246,6 @@ button {
   background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
   box-shadow: 0 0 18px rgba(99, 242, 166, 0.55);
   transition: width 380ms ease;
-}
-
-.playback-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 0 6px;
-}
-
-.playback-bar button {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border-radius: 50%;
-  color: rgba(255, 255, 255, 0.82);
-  cursor: pointer;
-}
-
-.playback-bar .play-button {
-  width: 54px;
-  height: 54px;
-  border: 0;
-  background: linear-gradient(135deg, #f6fff9, var(--accent));
-  color: #071211;
-  font-size: 22px;
-  box-shadow: 0 0 24px rgba(99, 242, 166, 0.55);
 }
 
 .thumbnail-strip {

@@ -2,112 +2,77 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>AI Creator Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mini World AI Agent Demo</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="creator-shell" aria-label="AI Creator Workspace">
-      <section class="preview-pane" aria-label="AI live preview viewport">
-        <div class="preview-topbar">
-          <button class="icon-button" type="button" aria-label="Back">←</button>
-          <button class="icon-button" type="button" aria-label="Settings">⚙</button>
-          <div class="edit-status"><span></span> Editing: Adventure Scene</div>
-          <button class="icon-button" type="button" aria-label="Fullscreen">⛶</button>
-        </div>
+    <main class="demo-page" aria-label="Mini World AI Agent Demo">
+      <section class="demo-frame" id="demoFrame" aria-label="基于视频尺寸的 AI Demo 画布">
+        <section class="video-surface" aria-label="游戏视频画面">
+          <video
+            id="gameVideo"
+            class="game-video"
+            src="assets/Ai.mp4"
+            preload="metadata"
+            playsinline
+            muted
+          ></video>
+          <button class="video-play-button" id="videoPlayButton" type="button" aria-label="播放视频预览">
+            <span>▶</span>
+          </button>
+          <div class="video-meta" id="videoMeta">Loading video size...</div>
+        </section>
 
-        <div class="viewport-card">
-          <video class="game-video" src="assets/game-video.mp4" preload="auto" muted playsinline></video>
-          <img class="game-ui-overlay" src="Ui/Frame 742227.png" alt="Game UI status bar" />
-
-          <div class="mobile-controls" aria-hidden="true">
-            <span>✋</span>
-            <span>✦</span>
-            <span>↻</span>
-          </div>
-
-          <div class="generation-card" aria-live="polite">
-            <div class="generation-card__title">AI is building...</div>
-            <div class="generation-card__desc" id="generationStatus">Waiting for your prompt</div>
-            <div class="progress-track"><span id="generationProgress"></span></div>
-          </div>
-        </div>
-
-
-        <div class="thumbnail-strip" aria-label="Preview camera presets">
-          <button class="thumb is-active" type="button"><span></span><strong>Main View</strong></button>
-          <button class="thumb" type="button"><span></span><strong>Player View</strong></button>
-          <button class="thumb" type="button"><span></span><strong>Bird View</strong></button>
-          <button class="thumb" type="button"><span></span><strong>Render</strong></button>
-          <button class="thumb thumb--add" type="button">＋</button>
-        </div>
-      </section>
-
-      <section class="agent-pane" aria-label="Agent conversation workspace">
-        <header class="agent-header">
-          <div>
-            <p>AI Assistant</p>
-            <h1>Creation Agent</h1>
-          </div>
-          <button class="thinking-pill" type="button"><span></span><strong id="modeStatus">Scene Creation</strong>⌄</button>
-        </header>
-
-        <div class="conversation-scroll" id="conversationScroll">
-          <div class="prompt-log" id="promptLog"></div>
-          <section class="task-panel" aria-label="Current operations">
-            <h2>Executing Operations</h2>
-            <div class="task-list" id="taskList">
-              <div class="task-row is-done"><span></span><p>Generate terrain base</p><strong>Done</strong></div>
-              <div class="task-row is-done"><span></span><p>Create object groups</p><strong>Done</strong></div>
-              <div class="task-row is-active"><span></span><p>Build interaction logic</p><strong>Running</strong></div>
-              <div class="task-row"><span></span><p>Apply model pass</p><strong>Waiting</strong></div>
+        <aside class="agent-sidebar" aria-label="Agent 对话侧边栏">
+          <header class="agent-header">
+            <div class="agent-brand">
+              <span class="agent-logo">✦</span>
+              <div>
+                <h1>AI Agent</h1>
+                <p>Game creation assistant</p>
+              </div>
             </div>
-          </section>
-        </div>
-
-        <aside class="log-drawer" id="logDrawer" aria-hidden="true">
-          <div class="log-drawer__header">
-            <div>
-              <span class="log-eyebrow">Conversation Log</span>
-              <h2>Full Conversation</h2>
+            <div class="agent-actions">
+              <span class="beta-badge">BETA</span>
+              <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="收起 Agent 侧边栏" aria-expanded="true">›</button>
             </div>
-            <button class="log-close" id="logClose" type="button" aria-label="Close full conversation">×</button>
+          </header>
+
+          <div class="agent-status">
+            <span></span>
+            <strong>Ready</strong>
+            <p>基于当前游戏画面进行自然语言修改</p>
           </div>
-          <div class="full-log" id="fullLog"></div>
+
+          <div class="chat-list" id="chatList" aria-live="polite">
+            <article class="chat-message chat-message--agent">
+              <p>我是迷你世界的 AI 助手，有什么可以帮助你的吗？</p>
+              <time>Agent · just now</time>
+            </article>
+          </div>
+
+          <div class="quick-prompts" aria-label="快捷指令">
+            <button type="button" data-prompt="帮我解释这个切换模式流程，并生成简化交互方案">解释流程</button>
+            <button type="button" data-prompt="把当前操作简化成适合新手的一步式 AI 指令">一键简化</button>
+            <button type="button" data-prompt="生成右侧 Agent 面板的演示话术">演示话术</button>
+          </div>
+
+          <form class="agent-input" id="agentForm">
+            <input class="sr-only" id="imageInput" type="file" accept="image/*" />
+            <label class="image-upload-button" for="imageInput" aria-label="选择图片发送给 Agent">＋</label>
+            <label class="sr-only" for="agentInput">输入给 Agent 的需求</label>
+            <div class="agent-compose">
+              <div class="selected-image" id="selectedImage" hidden>
+                <img id="selectedImagePreview" alt="已选择的图片预览" />
+                <button id="removeImageButton" type="button" aria-label="移除已选择图片">×</button>
+              </div>
+              <textarea id="agentInput" rows="1" maxlength="220" placeholder="Ask Agent to change the game..."></textarea>
+            </div>
+            <button id="sendButton" type="submit" aria-label="发送给 Agent">➤</button>
+          </form>
         </aside>
-
-        <form class="prompt-bar" id="promptForm">
-          <button class="log-button" id="logButton" type="button" aria-expanded="false" aria-controls="logDrawer">Log</button>
-          <label class="sr-only" for="promptInput">Enter AI prompt</label>
-          <textarea
-            id="promptInput"
-            class="prompt-input"
-            name="prompt"
-            rows="1"
-            maxlength="160"
-            placeholder="Describe what you want to create..."
-            autocomplete="off"
-          ></textarea>
-          <button class="send-button" type="submit" aria-label="Send prompt">➤</button>
-        </form>
-
-        <nav class="mobile-agent-tabs" aria-label="Agent sections">
-          <button class="is-active" type="button">Chat</button>
-          <button type="button">Assets</button>
-          <button type="button">History</button>
-          <button type="button">Settings</button>
-        </nav>
       </section>
-
-      <aside class="mode-rail" aria-label="Work mode switcher">
-        <h2>Work Mode</h2>
-        <button class="mode-button" type="button" data-mode="code"><span>⌘</span><strong>Code Mode</strong></button>
-        <button class="mode-button is-active" type="button" data-mode="scene"><span>⬡</span><strong>Scene Creation</strong></button>
-        <button class="mode-button" type="button" data-mode="ui"><span>▣</span><strong>UI Editing</strong></button>
-        <button class="mode-button" type="button" data-mode="model"><span>◈</span><strong>Model Generation</strong></button>
-      </aside>
     </main>
 
     <script type="module" src="app.js"></script>
